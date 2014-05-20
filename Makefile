@@ -6,9 +6,12 @@
 #get some errors with intel with really big trees
 CC := gcc
 CP := g++
-
+prefix := /work/02185/amwright/treePL-new/treePL
 OPENMP := -fopenmp
 #OPENMP := -openmp -parallel
+
+CFLAGS := -I/work/02185/amwright/treePL-new/nlopt-2.4.1/include -I/work/02185/amwright/treePL-new/adolc/include/ -L/work/02185/amwright/treePL-new/nlopt-2.4.1/lib -L/work/02185/amwright/treePL-new/adolc/lib64
+
 
 LIBS := -lm $(OPENMP) -ladolc -L/usr/lib64 -lnlopt
 
@@ -16,7 +19,6 @@ RM := rm -rf
 
 SRC_DIR = ./
 
-prefix = /usr/bin/
 
 CPP_SRCS += \
 ./main.cpp \
@@ -68,15 +70,15 @@ CPP_DEPS += \
 ./utils.d
 
 %.o: %.cpp
-	$(CP) -O3 -g3 -c -fmessage-length=0 $(OPENMP) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o $@ $(SRC_DIR)$<
+	$(CP) -O3 -g3 -c -fmessage-length=0 $(CFLAGS) $(OPENMP) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o $@ $(SRC_DIR)$<
 
 %.o: %.c
-	$(CC) -O3 -g3 -c -fmessage-length=0 $(OPENMP) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o $@ $<
+	$(CC) -O3 -g3 -c -fmessage-length=0 $(CFLAGS) $(OPENMP) -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o $@ $<
 
 all: treePL
 
 treePL: $(OBJS)
-	$(CP) -O3 -g3 -o treePL $(OBJS) $(LIBS)
+	$(CP) -O3 -g3 -o treePL $(OBJS) $(CFLAGS) $(LIBS)
 
 clean:
 	-$(RM) *.d *.o
