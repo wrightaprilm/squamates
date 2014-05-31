@@ -9,6 +9,7 @@ bisse_fits <- vector(mode="list")
 stat_list <- vector(mode="list")
 fit_plots <- vector(mode="list")
 a<- list.files(pattern="*tre")
+
 model_fit_nosplit <- function(tree_list){
 for (x in treelist){
 phy <- read.tree(x)
@@ -29,7 +30,8 @@ plot(pruned.tree, show.tip.label=FALSE)
 fit_plot <- nodelabels(pie=t(st), piecol=1:2, cex=.5)
 jpeg(outname)
 dev.off()
-i <- i + 1
+return(bisse_fits)
+}
 }
 
 
