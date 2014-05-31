@@ -8,6 +8,7 @@ lkp <- vector(mode="list")
 bisse_split_fits <- vector(mode="list")
 stat_list <- vector(mode="list")
 fit_plots <- vector(mode="list")
+test_list <- vector(mode="list")
 a<- list.files(pattern="*tre")
 
 skinks <- mrca(pruned.tree)["Plestiodon_fasciatus", "Acontias_percivali"]
@@ -31,11 +32,10 @@ pars.s <- rep(sp, 2)
 split_fit_bisse <- find.mle(split_func,pars.s)
 fit_bisse <- find.mle(func, sp)
 bisse_split_fits <- append(bisse_split_fits, split_fit_bisse)
-print(anova(split_fit_bisse, fit_bisse))
-print(split_fit_bisse)
-print(x)
-return(bisse_split_fits)
+test <- anova(split_fit_bisse, fit_bisse)
+test_list <- append(test_list,test)
+return(test_list)
 }
 }
 
-
+model_fit(ig,a)
