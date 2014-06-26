@@ -1,8 +1,5 @@
-model_fits: ../squam/scaled/*dated.tre bisse.r
+model_fits: ./trees/*.tre bisse.r
 	R CMD BATCH bisse.r 
-
-split_model_fit: ../squam/scaled/*dated.tre splitbisse.r
-	R CMD BATCH splitbisse.r
 
 plot_model_params: ./modelop.csv plot.py
 	python plot.py
