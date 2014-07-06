@@ -1,1 +1,0 @@
-{"version":1,"machines":{"418efba6dc1e43daa51606b450d57e2a":{"local_data_path":"/home/april/.vagrant","name":"default","provider":"virtualbox","state":"running","vagrantfile_name":null,"vagrantfile_path":"/home/april","updated_at":null,"extra_data":{"box":{"name":"hashicorp/precise32","provider":"virtualbox","version":"1.0.0"}}}}}
