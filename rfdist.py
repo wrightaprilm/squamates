@@ -39,6 +39,10 @@ scirf = []
 for tree in scitrees:
 	scirf.append(sci_ml.symmetric_difference(tree))
 
+df = pd.DataFrame.from_items([('Total', total_rf), ('Anguimorphs', angrf), ('Gekkos', gekrf), ('Iguanids', igurf), ('Lacertids', lacrf), ('Snakes', serrf), ('Skinks', scirf)])
+
+df.to_csv('all_data.csv')
+
 
 
 
