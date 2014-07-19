@@ -7,8 +7,9 @@ from dendropy.utility.fileutils import find_files
 ml = dendropy.Tree.get_from_path("filename", "format")
 print(ml.description())
 node_D = ml.find_node_with_taxon_label("Sphenodon punctatus")
-ml.reroot_at_edge(node_D.edge, update_splits=True)
-ml.write_to_path("filenamererooted", "newick")
+outgroup_node = spe_node.parent_node
+ml = ml.reroot_at_node(outgroup_node, update_splits=True)
+ml_rooted.write_to_path("filenamererooted", "newick")
 
 ## clone rerooted tree for pruning
 ml0 = dendropy.Tree(ml)
@@ -19,12 +20,12 @@ ml4 = dendropy.Tree(ml)
 ml5 = dendropy.Tree(ml)
 
 ## get mrca nodes for clades
-ang_mrca = ml0.mrca(taxon_labels=["Varanus indicus", "Anniella pulchra"])
-gek_mrca = ml1.mrca(taxon_labels=["Phelsuma ornata", "Delma impar"])
-igu_mrca = ml2.mrca(taxon_labels=["Iguana iguana", "Chamaeleo zeylanicus"])
-lac_mrca = ml3.mrca(taxon_labels=["Bipes biporus", "Teius teyou"])
-ser_mrca = ml4.mrca(taxon_labels=["Nerodia rhombifer", "Liotyphlops albirostris"])
-sci_mrca = ml5.mrca(taxon_labels=["Plestiodon fasciatus", "Acontias percivali"])
+ang_mrca = ml.mrca(taxon_labels=["Varanus indicus", "Anniella pulchra"])
+gek_mrca = ml.mrca(taxon_labels=["Phelsuma ornata", "Delma impar"])
+igu_mrca = ml.mrca(taxon_labels=["Iguana iguana", "Chamaeleo zeylanicus"])
+lac_mrca = ml.mrca(taxon_labels=["Bipes biporus", "Teius teyou"])
+ser_mrca = ml.mrca(taxon_labels=["Nerodia rhombifer", "Liotyphlops albirostris"])
+sci_mrca = ml.mrca(taxon_labels=["Plestiodon fasciatus", "Acontias percivali"])
 
 ## pruning and writing trees goes here
 ang_ml=dendropy.Tree()
@@ -54,7 +55,7 @@ sci_ml.write_to_path("sci_ml.tre","newick")
 
 ## uncomment if trees are in separate files, import list of trees of type newick
 ##flist = find_files(top='trees', filename_filter='*.dated.tre')
-##sqtrees = [dendropy.TreeList.get_from_path(filename,"newick") for filename in flist]
+##sqtrees = [dendropy.Tree.get_from_path(filename,"newick") for filename in flist]
 ##print(sqtrees.description(2))
 
 ## empty tree lists for pruned trees
@@ -67,8 +68,9 @@ scitrees = dendropy.TreeList()
 
 ## same operations as above but for a sample of trees
 for tree in sqtrees:
-	rep_node_D = tree.find_node_with_taxon_label("Sphenodon punctatus")
-	tree.reroot_at_edge(rep_node_D.edge, update_splits=True)
+	node_D = tree.find_node_with_taxon_label("Sphenodon punctatus")
+	outgroup_node = spe_node.parent_node
+	ml.reroot_at_node(outgroup_node)
 	tree.write_to_path("treelistrerooted.tre","newick")
 
 ## clone tree list for pruning, will take a while
@@ -80,32 +82,32 @@ sq4 = dendropy.TreeList(sqtrees)
 sq5 = dendropy.TreeList(sqtrees)
 
 ## pruning from lists of trees
-for tree in sq0:
+for tree in sqtrees:
 	rep_ang_mrca = tree.mrca(taxon_labels=["Varanus indicus", "Anniella pulchra"])
 	ang_tree=dendropy.Tree()
 	ang_tree.seed_node = rep_ang_mrca
 	angtrees.append(ang_tree)
-for tree in sq1:	
+for tree in sqtrees:	
 	rep_gek_mrca = tree.mrca(taxon_labels=["Phelsuma ornata", "Delma impar"])
 	gek_tree=dendropy.Tree()	
 	gek_tree.seed_node = rep_gek_mrca
 	gektrees.append(gek_tree)
-for tree in sq2:
+for tree in sqtrees:
 	rep_igu_mrca = tree.mrca(taxon_labels=["Iguana iguana", "Chamaeleo zeylanicus"])
 	igu_tree=dendropy.Tree()
 	igu_tree.seed_node = rep_igu_mrca
 	igutrees.append(igu_tree)
-for tree in sq3:
+for tree in sqtrees:
 	rep_lac_mrca = tree.mrca(taxon_labels=["Bipes biporus", "Teius teyou"])
 	lac_tree=dendropy.Tree()
 	lac_tree.seed_node = rep_lac_mrca
 	lactrees.append(lac_tree)
-for tree in sq4:
+for tree in sqtrees:
 	rep_ser_mrca = tree.mrca(taxon_labels=["Nerodia rhombifer", "Liotyphlops albirostris"])
 	ser_tree=dendropy.Tree()	
 	ser_tree.seed_node = rep_ser_mrca
 	sertrees.append(ser_tree)
-for tree in sq5:
+for tree in sqtrees:
 	rep_sci_mrca = tree.mrca(taxon_labels=["Plestiodon fasciatus", "Acontias percivali"])
 	sci_tree=dendropy.Tree()
 	sci_tree.seed_node = rep_sci_mrca

@@ -2,7 +2,7 @@ import dendropy
 import pandas as pd
 
 ## import ml tree and sample of trees to compare against it
-ang_ml = dendropy.Tree.get_from_path('mltree/ang_ml.tre','nexus')
+ang_ml = dendropy.Tree.get_from_path('ang_ml.tre','nexus')
 angtrees = dendropy.TreeList.get_from_path('subtrees/angtrees.tre','newick')
 angrf = []
 for tree in angtrees:
@@ -12,8 +12,8 @@ for tree in angtrees:
 gek_ml = dendropy.Tree.get_from_path('mltree/gek_ml.tre','nexus')
 gektrees = dendropy.TreeList.get_from_path('subtrees/gektrees.tre','newick')
 gekrf = []
-for tree in gektrees:
-	gekrf.append(gek_ml.symmetric_difference(tree))
+for gek in gektrees:
+	gekrf.append(gek_ml.symmetric_difference(gek))
 
 igu_ml = dendropy.Tree.get_from_path('mltree/igu_ml.tre','nexus')
 igutrees = dendropy.TreeList.get_from_path('subtrees/igutrees.tre','newick')
