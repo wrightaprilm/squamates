@@ -1,0 +1,14 @@
+Task\ label=partitions run, no constraint
+Task\ ID=513776
+Tool=RAXMLHPC2_TGB
+created\ on=2014-07-15 14:15:04.0
+JobHandle=NGBW-JOB-RAXMLHPC2_TGB-FC2C66E7433F4722B05A18A9DD81A132
+resource=trestles
+User\ ID=73571
+User\ Name=amwright
+email=wright.aprilm@utexas.edu
+
+Output=(all_outputfiles,*,UNKNOWN,UNKNOWN,UNKNOWN)
+ChargeFactor=1.000000
+cores=64
+JOBID=2208113.trestles-fe1.local

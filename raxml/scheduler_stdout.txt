@@ -1,0 +1,3 @@
+/tmp/20140716T00:46:27-cipres-32094.gramauditGateway user attribute (wright.aprilm@utexas.edu) submitted for job 2208113.trestles-fe1.local.
+OK
+Nodes:        trestles-3-29 trestles-3-6
