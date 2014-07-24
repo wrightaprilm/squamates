@@ -1,2 +1,0 @@
-#!/bin/sh
-raxmlHPC-HYBRID -s infile -n result -x 12345 -g constraint.tre -N 100 -q part -k -c 25 -p 12345 -f a -m GTRGAMMA -o Sphenodon_punctatus 
