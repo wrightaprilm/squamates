@@ -14,11 +14,10 @@ def data_clean():
 	joined_mat = dat.append(dat1)
 	return(joined_mat)
 
-
 def plot_params():
 	joined_mat = data_clean()
-	mypb_mle_dict_o = {'Lambda':4.242674e-02, 'Mu':8.908371e-07, 'Q':7.529796e-04, 'Likelihood':-16735.45 }
-	mypb_mle_dict_v = {'Lambda':5.734688e-02, 'Mu':9.791236e-06, 'Q':6.054965e-03, 'Likelihood':-16735.45}
+	mypb_mle_dict_o = {'Lambda':3.126341e-02, 'Mu':8.043702e-06, 'Q':6.693207e-04, 'Likelihood':-18088.72 }
+	mypb_mle_dict_v = {'Lambda':3.554580e-02, 'Mu':9.342949e-07, 'Q':2.932465e-03, 'Likelihood':-18088.72}
 	pb_mle_dict_o = {'Lambda':0.0628, 'Mu':0.0000, 'Q':0.0007, 'Likelihood':-16735.45 }
 	pb_mle_dict_v = {'Lambda':0.0848, 'Mu':0.0270, 'Q':0.0059, 'Likelihood':-16735.45}
 	columns =list(joined_mat.columns)
