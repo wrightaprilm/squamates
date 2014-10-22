@@ -1,0 +1,758 @@
+
+R version 3.1.1 (2014-07-10) -- "Sock it to Me"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: i686-pc-linux-gnu (32-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> ##For non-split BiSSE
+> ##Load dependencies
+> library(diversitree)
+Loading required package: deSolve
+Loading required package: ape
+Loading required package: subplex
+Loading required package: Rcpp
+> library(ape)
+> #For this analysis, we use a data file that's been made a little smaller than the 8000-taxon data set. Load it.
+> data <- read.csv('./PyronParityData.csv', row.names=1)
+> # Initialize vectors. These will be used for formatting output.
+> output_vector <- vector()
+> ovip_root_vector <- vector()
+> vivip_root_vector <- vector()
+> 
+> #File currently set up to accept input from Make, or if trees in working directory
+> a<- list.files(path='./dated_trees_for_gavin/raxml/', pattern="x*.dated_tre", full.names=TRUE)
+> 
+> #Main function to fit model to each tree in BS sample
+> model_fit <- function(tree_list){
++ for (x in tree_list){
++ 	print(x)
++ #For each tree in our vector of trees, read it in and distill down the tree to the shared tips between it and the data set
++ 	phy <- read.tree(x)
++ 	pruned.tree<-drop.tip(phy, setdiff(phy$tip.label, row.names(data)))
++ 	sorteddata <- data[phy$tip.label, ]
++ 	no_na <- na.omit(sorteddata)
++ 	names(no_na) <- pruned.tree$tip.label
++   	pruned.tree <- multi2di(pruned.tree, random = TRUE)
++ 	#Make the BiSSE function
++ 	func <- make.bisse(pruned.tree, no_na)
++ 	sp<-starting.point.bisse(pruned.tree)
++ 	# Find MLE and use it to do ancestral state reconstruction 
++ 	fit_bisse <- find.mle(func, sp)
++ #	print(fit_bisse)
++ 	st <- asr.marginal(func, coef(fit_bisse))
++ 	#Add root states to a vector of states  
++ 	ovip_root_vector <- append(ovip_root_vector, c(st[,2][1], 'Oviparity'))
++ 	vivip_root_vector <- append(vivip_root_vector, c(st[,2][2], 'Viviparity'))
++ 	output_vector <- append(output_vector, c(fit_bisse$par[1:6], fit_bisse$lnLik))
++ 	#Plot tree
++ 	plot(pruned.tree, show.tip.label=FALSE)
++ 	fit_plot <- nodelabels(pie=t(st), piecol=1:2, cex=.5)
++ 	#Output various parameters: the model and ancestral states 
++ }
++ 
++ 	lapply(output_vector, write, "model_params.csv", append=TRUE, ncolumns=7)
++ 	lapply(ovip_root_vector, write, "ovip_support.csv", append=TRUE,ncolumns=2)
++ 	lapply(vivip_root_vector, write, "vivip_support.csv", append=TRUE, ncolumns=2)
++ }
+> 
+> #Call the function if you want
+> model_fit(a)
+[1] "./dated_trees_for_gavin/raxml//xaa.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xab.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xac.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xad.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xae.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xaf.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xag.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xah.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xai.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xaj.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xak.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xal.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xam.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xan.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xao.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xap.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xaq.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xar.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xas.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xat.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xau.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xav.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xaw.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xax.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xay.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xaz.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xba.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbb.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbc.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbd.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbe.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbf.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbg.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbh.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbi.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbj.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbk.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbl.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbm.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbn.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbo.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbp.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbq.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbr.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbs.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbt.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbu.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbv.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbw.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbx.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xby.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xbz.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xca.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcb.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcc.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xce.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcf.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcg.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xch.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xci.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcj.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xck.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcl.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcm.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcn.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xco.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcp.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcq.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcr.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcs.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xct.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcu.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcv.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcw.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcx.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcy.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xcz.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdc.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdd.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xde.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdf.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdg.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdh.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdi.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdj.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdk.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdl.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdm.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdn.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdo.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdp.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdq.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdr.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xds.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdt.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdu.dated_tre"
+[1] "./dated_trees_for_gavin/raxml//xdv.dated_tre"
+[[1]]
+NULL
+
+[[2]]
+NULL
+
+[[3]]
+NULL
+
+[[4]]
+NULL
+
+[[5]]
+NULL
+
+[[6]]
+NULL
+
+[[7]]
+NULL
+
+[[8]]
+NULL
+
+[[9]]
+NULL
+
+[[10]]
+NULL
+
+[[11]]
+NULL
+
+[[12]]
+NULL
+
+[[13]]
+NULL
+
+[[14]]
+NULL
+
+[[15]]
+NULL
+
+[[16]]
+NULL
+
+[[17]]
+NULL
+
+[[18]]
+NULL
+
+[[19]]
+NULL
+
+[[20]]
+NULL
+
+[[21]]
+NULL
+
+[[22]]
+NULL
+
+[[23]]
+NULL
+
+[[24]]
+NULL
+
+[[25]]
+NULL
+
+[[26]]
+NULL
+
+[[27]]
+NULL
+
+[[28]]
+NULL
+
+[[29]]
+NULL
+
+[[30]]
+NULL
+
+[[31]]
+NULL
+
+[[32]]
+NULL
+
+[[33]]
+NULL
+
+[[34]]
+NULL
+
+[[35]]
+NULL
+
+[[36]]
+NULL
+
+[[37]]
+NULL
+
+[[38]]
+NULL
+
+[[39]]
+NULL
+
+[[40]]
+NULL
+
+[[41]]
+NULL
+
+[[42]]
+NULL
+
+[[43]]
+NULL
+
+[[44]]
+NULL
+
+[[45]]
+NULL
+
+[[46]]
+NULL
+
+[[47]]
+NULL
+
+[[48]]
+NULL
+
+[[49]]
+NULL
+
+[[50]]
+NULL
+
+[[51]]
+NULL
+
+[[52]]
+NULL
+
+[[53]]
+NULL
+
+[[54]]
+NULL
+
+[[55]]
+NULL
+
+[[56]]
+NULL
+
+[[57]]
+NULL
+
+[[58]]
+NULL
+
+[[59]]
+NULL
+
+[[60]]
+NULL
+
+[[61]]
+NULL
+
+[[62]]
+NULL
+
+[[63]]
+NULL
+
+[[64]]
+NULL
+
+[[65]]
+NULL
+
+[[66]]
+NULL
+
+[[67]]
+NULL
+
+[[68]]
+NULL
+
+[[69]]
+NULL
+
+[[70]]
+NULL
+
+[[71]]
+NULL
+
+[[72]]
+NULL
+
+[[73]]
+NULL
+
+[[74]]
+NULL
+
+[[75]]
+NULL
+
+[[76]]
+NULL
+
+[[77]]
+NULL
+
+[[78]]
+NULL
+
+[[79]]
+NULL
+
+[[80]]
+NULL
+
+[[81]]
+NULL
+
+[[82]]
+NULL
+
+[[83]]
+NULL
+
+[[84]]
+NULL
+
+[[85]]
+NULL
+
+[[86]]
+NULL
+
+[[87]]
+NULL
+
+[[88]]
+NULL
+
+[[89]]
+NULL
+
+[[90]]
+NULL
+
+[[91]]
+NULL
+
+[[92]]
+NULL
+
+[[93]]
+NULL
+
+[[94]]
+NULL
+
+[[95]]
+NULL
+
+[[96]]
+NULL
+
+[[97]]
+NULL
+
+[[98]]
+NULL
+
+[[99]]
+NULL
+
+[[100]]
+NULL
+
+[[101]]
+NULL
+
+[[102]]
+NULL
+
+[[103]]
+NULL
+
+[[104]]
+NULL
+
+[[105]]
+NULL
+
+[[106]]
+NULL
+
+[[107]]
+NULL
+
+[[108]]
+NULL
+
+[[109]]
+NULL
+
+[[110]]
+NULL
+
+[[111]]
+NULL
+
+[[112]]
+NULL
+
+[[113]]
+NULL
+
+[[114]]
+NULL
+
+[[115]]
+NULL
+
+[[116]]
+NULL
+
+[[117]]
+NULL
+
+[[118]]
+NULL
+
+[[119]]
+NULL
+
+[[120]]
+NULL
+
+[[121]]
+NULL
+
+[[122]]
+NULL
+
+[[123]]
+NULL
+
+[[124]]
+NULL
+
+[[125]]
+NULL
+
+[[126]]
+NULL
+
+[[127]]
+NULL
+
+[[128]]
+NULL
+
+[[129]]
+NULL
+
+[[130]]
+NULL
+
+[[131]]
+NULL
+
+[[132]]
+NULL
+
+[[133]]
+NULL
+
+[[134]]
+NULL
+
+[[135]]
+NULL
+
+[[136]]
+NULL
+
+[[137]]
+NULL
+
+[[138]]
+NULL
+
+[[139]]
+NULL
+
+[[140]]
+NULL
+
+[[141]]
+NULL
+
+[[142]]
+NULL
+
+[[143]]
+NULL
+
+[[144]]
+NULL
+
+[[145]]
+NULL
+
+[[146]]
+NULL
+
+[[147]]
+NULL
+
+[[148]]
+NULL
+
+[[149]]
+NULL
+
+[[150]]
+NULL
+
+[[151]]
+NULL
+
+[[152]]
+NULL
+
+[[153]]
+NULL
+
+[[154]]
+NULL
+
+[[155]]
+NULL
+
+[[156]]
+NULL
+
+[[157]]
+NULL
+
+[[158]]
+NULL
+
+[[159]]
+NULL
+
+[[160]]
+NULL
+
+[[161]]
+NULL
+
+[[162]]
+NULL
+
+[[163]]
+NULL
+
+[[164]]
+NULL
+
+[[165]]
+NULL
+
+[[166]]
+NULL
+
+[[167]]
+NULL
+
+[[168]]
+NULL
+
+[[169]]
+NULL
+
+[[170]]
+NULL
+
+[[171]]
+NULL
+
+[[172]]
+NULL
+
+[[173]]
+NULL
+
+[[174]]
+NULL
+
+[[175]]
+NULL
+
+[[176]]
+NULL
+
+[[177]]
+NULL
+
+[[178]]
+NULL
+
+[[179]]
+NULL
+
+[[180]]
+NULL
+
+[[181]]
+NULL
+
+[[182]]
+NULL
+
+[[183]]
+NULL
+
+[[184]]
+NULL
+
+[[185]]
+NULL
+
+[[186]]
+NULL
+
+[[187]]
+NULL
+
+[[188]]
+NULL
+
+[[189]]
+NULL
+
+[[190]]
+NULL
+
+[[191]]
+NULL
+
+[[192]]
+NULL
+
+[[193]]
+NULL
+
+[[194]]
+NULL
+
+> 
+> 
+> proc.time()
+     user    system   elapsed 
+20063.760   135.416 75356.279 
