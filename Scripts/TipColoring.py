@@ -1,5 +1,3 @@
-
-
 # Purpose: This script melds together your node labels from Diversitree with the tip-based data you've save in a csv. This allows you to appropriately colorize the tree in FigTree. If you don't use this script, the tree will have colors that extend to the parent node of the tips, leaving the tips black.
 import dendropy
 import sys
@@ -9,46 +7,42 @@ from dendropy.utility.fileutils import find_files
 
 
 # Import tree with node labels. Because we'll use a pandas dataframe to associate the tip data with the tree, we want to preserve the underscores, assuming they exist in your data file of tip states. If not, set to false.
-
-
 taxa = dendropy.TaxonSet()
 filter = sys.argv[2]
 flist = find_files(top=sys.argv[1], filename_filter='%s*' % filter)
 sqtrees = [dendropy.Tree.get_from_path(filename,"newick",taxon_set=taxa, preserve_underscores=True,extract_comment_metadata=True) for filename in flist]
-
-
-# Import data. CSV with one column of taxon labels, one of tip states.
-
-# In[3]:
-
 data = pd.read_csv('./Data/PyronParityData.csv', index_col=0)
 
 
-# Iterate over nodes, associating them with the tip states in the pandas dataframe.
-for mle in sqtrees:
-    for idx, nd in enumerate(mle.postorder_node_iter()):
-        if nd.label is None:
-            lookup = '{}'.format(nd.taxon)
-            nd.label = int(data.ix[lookup])
-        else: 
-            pass
+def label_nodes(sqtrees, data):
+    '''Iterate over nodes, associating them with the tip states in the 
+    pandas dataframe.'''
+    for mle in sqtrees:
+        for idx, nd in enumerate(mle.postorder_node_iter()):
+            if nd.label is None:
+                lookup = '{}'.format(nd.taxon)
+                nd.label = int(data.ix[lookup])
+            else: 
+                pass
 
-# Associate value ranges with colors.
+def colorize(labeled_trees):
+    '''Associate value ranges with colors.'''
+    for mle in sqtrees:
+        for nd in mle.postorder_node_iter():    
+            if nd.label == None:
+                pass
+            elif float(nd.label) == 0:
+                nd.annotations.add_new(name = '!color', value = '#0000FF') #Dark blue, zeroes
+            elif float(nd.label) > 0 and float(nd.label) < 0.5:
+                nd.annotations.add_new(name = '!color', value = '#ff0000') #Red, strongly viviparous  
+        mle.write_to_path('%s/tip_annotated_%s' % (sys.argv[1], 
+        os.path.basename(filename)), 'nexus', suppress_annotations = False, 
+        annotations_as_nhx=False, suppress_taxa_block=True,
+        suppress_internal_taxon_labels=True)
 
-# In[7]:
-for mle in sqtrees:
-    for nd in mle.postorder_node_iter():    
-        print nd.label
-        if nd.label == None:
-            pass
-        elif float(nd.label) == 0:
-            nd.annotations.add_new(name = '!color', value = '#0000FF') #Dark blue, zeroes
-        elif float(nd.label) > 0 and float(nd.label) < 0.5:
-            nd.annotations.add_new(name = '!color', value = '#ff0000') #Red, strongly viviparous  
-    mle.write_to_path('%s/tip_annotated_%s' % (sys.argv[1], 
-    os.path.basename(filename)), 'nexus', suppress_annotations = False, 
-    annotations_as_nhx=False, suppress_taxa_block=True,
-    suppress_internal_taxon_labels=True)
+if __name__ == '__main__':
+    labeled_trees = label_nodes(sqtrees, data)
+    colorize(labeled_trees)
 
 # You now have a FigTree-readable nexus with node and tip annotations.
 
