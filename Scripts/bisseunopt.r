@@ -2,6 +2,7 @@
 ##Load dependencies
 library(diversitree)
 library(ape)
+options(stringsAsFactors=F)
 #For this analysis, we use a data file that's been made a little smaller than the 8000-taxon data set. Load it.
 data <- read.csv('./Data/PyronParityData.csv', row.names=1)
 # Initialize vectors. These will be used for formatting output.
@@ -29,21 +30,27 @@ for (x in tree_list){
 	# Find MLE and use it to do ancestral state reconstruction 
 	fit_bisse <- find.mle(func, sp)
 	fit_bisse1 <- find.mle(func1, sp)
-	fit_bisse2 <- find.mle(func1, sp)
+	fit_bisse2 <- find.mle(func2, sp)
 	#Add root states to a vector of states  
 	st <- asr.marginal(func, coef(fit_bisse))
 	st1 <- asr.marginal(func, coef(fit_bisse1))
 	st2 <- asr.marginal(func, coef(fit_bisse2))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Complete Sampling', st[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Complete Sampling', st[,2][2]))
+	
 	output_vector <- rbind(output_vector, c('Complete Sampling', fit_bisse$par[1:6], fit_bisse$lnLik))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - One-Term Sampling', st1[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Complete Sampling', st1[,2][2]))
-	output_vector <- rbind(output_vector, c('One-Term Sampling', fit_bisse1$par[1:6], fit_bisse1$lnLik))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Two-Term Sampling', st2[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Two-Term Sampling', st2[,2][2]))
-	output_vector <- rbind(output_vector, c('Two-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik))
-	print (output_vector)
+    colnames(output_vector) <- c('param', 'lambda','lambda1','mu','mu1','q','q1','lik')
+	output_vector <- rbind(output_vector, c('One-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik, stringsAsFactors=F))
+	output_vector <- rbind(output_vector, c('Two-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik, stringsAsFactors=F))
+
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Complete Sampling', st[,2][1]))
+    colnames(ovip_root_vector) <- c('ov', 'param')	
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - One-Term Sampling', st1[,2][1], stringsAsFactors=F))
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Two-Term Sampling', st2[,2][1], stringsAsFactors=F))
+	
+	vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Complete Sampling', st[,2][2]))
+	colnames(ovip_root_vector) <- c('vi', 'param')
+    vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Complete Sampling', st1[,2][2], stringsAsFactors=F))
+	vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Two-Term Sampling', st2[,2][2], stringsAsFactors=F))	
+
 	#Plot tree
 #	plot(pruned.tree, show.tip.label=F)
 ##	fit_plot <- nodelabels(pie=t(st), piecol=1:2, cex=.5)
@@ -57,12 +64,14 @@ for (x in tree_list){
 	new_name <- paste('annotated_2', basename(x), sep = '_')
 	write.tree(pruned.tree, file = new_name, append = FALSE, digits = 10, tree.names = FALSE)
 	#Output various parameters: the model and ancestral states 
+	
+	write.csv(output_vector, file = "unoptimized_model_params.csv")
+	write.csv(ovip_root_vector, file = "unoptimized_ovip_support.csv")
+	write.csv(vivip_root_vector, file = "unoptimized_vivip_support.csv")
+	
 }
+warnings()
 
-
-	write.csv(output_vector, file = "unoptimized_model_params.csv", col.names = FALSE, sep = ",")
-	write.csv(ovip_root_vector, file = "unoptimized_ovip_support.csv", col.names = FALSE, sep = ",")
-	write.csv(vivip_root_vector, file = "unoptimized_vivip_support.csv", col.names = FALSE, sep = ",")
 }
 
 #Call the function if you want

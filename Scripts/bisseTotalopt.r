@@ -38,15 +38,20 @@ for (x in tree_list){
 	st <- asr.marginal(func, coef(fit_bisse))
 	st1 <- asr.marginal(func, coef(fit_bisse1))
 	st2 <- asr.marginal(func, coef(fit_bisse2))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Complete Sampling', st[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Complete Sampling', st[,2][2]))
 	output_vector <- rbind(output_vector, c('Complete Sampling', fit_bisse$par[1:6], fit_bisse$lnLik))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - One-Term Sampling', st1[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Complete Sampling', st1[,2][2]))
-	output_vector <- rbind(output_vector, c('One-Term Sampling', fit_bisse1$par[1:6], fit_bisse1$lnLik))
-	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Two-Term Sampling', st2[,2][1]))
-	vivip_root_vector <- rbind(ovip_root_vector, c('Viviparity - Two-Term Sampling', st2[,2][2]))
-	output_vector <- rbind(output_vector, c('Two-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik))
+    colnames(output_vector) <- c('param', 'lambda','lambda1','mu','mu1','q','q1','lik')
+	output_vector <- rbind(output_vector, c('One-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik, stringsAsFactors=F))
+	output_vector <- rbind(output_vector, c('Two-Term Sampling', fit_bisse2$par[1:6], fit_bisse2$lnLik, stringsAsFactors=F))
+
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Complete Sampling', st[,2][1]))
+    colnames(ovip_root_vector) <- c('ov', 'param')	
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - One-Term Sampling', st1[,2][1], stringsAsFactors=F))
+	ovip_root_vector <- rbind(ovip_root_vector, c('Oviparity - Two-Term Sampling', st2[,2][1], stringsAsFactors=F))
+	
+	vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Complete Sampling', st[,2][2]))
+	colnames(ovip_root_vector) <- c('vi', 'param')
+    vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Complete Sampling', st1[,2][2], stringsAsFactors=F))
+	vivip_root_vector <- rbind(vivip_root_vector, c('Viviparity - Two-Term Sampling', st2[,2][2], stringsAsFactors=F))	
 	
 	#Plot tree
 #	plot(pruned.tree, show.tip.label=F)
@@ -63,9 +68,9 @@ for (x in tree_list){
 	#Output various parameters: the model and ancestral states 
 }
 
-	write.csv(output_vector, file = "Totaloptimized_model_params.csv", col.names = FALSE, sep = ",")
-	write.csv(ovip_root_vector, file = "Totaloptimized_ovip_support.csv", col.names = FALSE, sep = ",")
-	write.csv(vivip_root_vector, file = "Totaloptimized_vivip_support.csv", col.names = FALSE, sep = ",")
+	write.csv(output_vector, file = "Totaloptimized_model_params.csv")
+	write.csv(ovip_root_vector, file = "Totaloptimized_ovip_support.csv")
+	write.csv(vivip_root_vector, file = "Totaloptimized_vivip_support.csv")
 }
 #Call the function if you want
 model_fit(a)
