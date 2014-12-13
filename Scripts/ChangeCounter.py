@@ -9,9 +9,15 @@ data = pd.read_csv('./Data/PyronParityData.csv', index_col=0, header=False)
 
 taxa = dendropy.TaxonSet()
 flist = find_files(top=sys.argv[1], filename_filter=sys.argv[2])
-sqtrees = [dendropy.Tree.get_from_path(filename,"newick",taxon_set=taxa, preserve_underscores=True,extract_comment_metadata=True) for filename in flist]
+
+sqtrees = [dendropy.Tree.get_from_path(filename,"nexus",
+                                    taxon_set=taxa, preserve_underscores=True,
+                                    extract_comment_metadata=True) for 
+                                    filename in flist]
 
 def check_labeling(trees):
+    '''Add node labels to nodes that don't have them (tips). This should have
+    been done in previous script, but just in case. '''
     labeled_trees = []
     for mle in sqtrees:     
         for idx, nd in enumerate(mle.postorder_node_iter()):
@@ -21,16 +27,16 @@ def check_labeling(trees):
                 labeled_trees.append(mle)
             else: 
                 pass
-                labeled.trees.append(mle)
+                labeled_trees.append(mle)
     return(labeled_trees)
 
 def counting(labeled_trees):    
+    '''count changes'''
     putative_c = []
     putative_co = []
     mega_list = []
     for mle in sqtrees:
         for index, node in enumerate(mle.postorder_node_iter()):
-            total.append(index)
             if node.parent_node is None:
                 pass
             elif .5 < float(node.label) < 1 or float(node.label) == 0:    #Is likely oviparous 
@@ -45,7 +51,7 @@ def counting(labeled_trees):
             elif 0 < float(node.label) < .5 or float(node.label) == 1: 
                 if float(node.parent_node.label) > .5: 
                     putative_c.append([node.parent_node.label,node.taxon])     
-    mega_list.append((len(putative_c))
+    mega_list.append((len(putative_c)))
     rev_mat = pd.DataFrame(mega_list)
 #    rev_mat.index = flist
     return(rev_mat)

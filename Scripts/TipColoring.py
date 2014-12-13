@@ -35,7 +35,7 @@ def colorize(labeled_trees):
                 nd.annotations.add_new(name = '!color', value = '#0000FF') #Dark blue, zeroes
             elif float(nd.label) > 0 and float(nd.label) < 0.5:
                 nd.annotations.add_new(name = '!color', value = '#ff0000') #Red, strongly viviparous  
-        mle.write_to_path('%s/tip_annotated_%s' % (sys.argv[1], 
+        mle.write_to_path('%s/colorized_%s' % (sys.argv[1], 
         os.path.basename(filename)), 'nexus', suppress_annotations = False, 
         annotations_as_nhx=False, suppress_taxa_block=True,
         suppress_internal_taxon_labels=True)

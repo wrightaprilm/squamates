@@ -10,19 +10,19 @@ total_optimized_model_fits: ./Trees/TotalOptimization/Dated/test* ./Scripts/biss
 	R CMD BATCH ./Scripts/bisseTotalopt.r 
 
 colorizer: ./tip_annotated* ./Scripts/TipColoring.py
-    python ./Scripts/TipColoring.py . 'tip_annotated_*dated'
+	python ./Scripts/TipColoring.py . 'tip_annotated_*dated'
 
 colorizerBL: ./tip_annotated* ./Scripts/TipColoring.py
-    python ./Scripts/TipColoring.py . 'tip_annotatedBL_*dated'
+	python ./Scripts/TipColoring.py . 'tip_annotatedBL_*dated'
 	
 colorizerTotal: ./tip_annotated* ./Scripts/TipColoring.py
-    python ./Scripts/TipColoring.py . 'tip_annotatedTotal_*dated'
+	python ./Scripts/TipColoring.py . 'tip_annotatedTotal_*dated'
 
 counter: ./annotated* ./Scripts/ChangeCounter.py
-    python ./Scripts/ChangeCounter.py . annotated   
+	python ./Scripts/ChangeCounter.py . colorized*.dated  
 
 counterBL: ./annotated* ./Scripts/ChangeCounter.py
-    python ./Scripts/ChangeCounter.py . annotatedBL
+	python ./Scripts/ChangeCounter.py . colorized*BL*.dated
 	
 counterTotal: ./annotated* ./Scripts/ChangeCounter.py
-    python ./Scripts/ChangeCounter.py . annotatedTotal
+	python ./Scripts/ChangeCounter.py . colorized*Total*.dated
