@@ -9,20 +9,20 @@ branch_length_optimized_model_fits: ./Trees/BranchLengthOptimized/Dated/test* ./
 total_optimized_model_fits: ./Trees/TotalOptimization/Dated/test* ./Scripts/bisseTotalopt.r
 	R CMD BATCH ./Scripts/bisseTotalopt.r 
 
-colorizer: ./annotated* ./Scripts/TipColoring.py
-	python ./Scripts/TipColoring.py . 'annotated_'
+colorizer: ./tip_annotated* ./Scripts/TipColoring.py
+    python ./Scripts/TipColoring.py . 'tip_annotated_*dated'
 
-colorizerBL: ./annotated* ./Scripts/TipColoring.py
-	python ./Scripts/TipColoring.py . 'annotatedBL_' 
+colorizerBL: ./tip_annotated* ./Scripts/TipColoring.py
+    python ./Scripts/TipColoring.py . 'tip_annotatedBL_*dated'
 	
-colorizerTotal: ./annotated* ./Scripts/TipColoring.py
-	python ./Scripts/TipColoring.py . 'annotatedTotal_'	
+colorizerTotal: ./tip_annotated* ./Scripts/TipColoring.py
+    python ./Scripts/TipColoring.py . 'tip_annotatedTotal_*dated'
 
 counter: ./annotated* ./Scripts/ChangeCounter.py
-	python ./Scripts/ChangeCounter.py . 'tip_annotated_annotated'
+    python ./Scripts/ChangeCounter.py . annotated   
 
 counterBL: ./annotated* ./Scripts/ChangeCounter.py
-	python ./Scripts/ChangeCounter.py . 'tip_annotated_annotatedBL' 
+    python ./Scripts/ChangeCounter.py . annotatedBL
 	
 counterTotal: ./annotated* ./Scripts/ChangeCounter.py
-	python ./Scripts/ChangeCounter.py . 'tip_annotated_annotatedTotal'
+    python ./Scripts/ChangeCounter.py . annotatedTotal

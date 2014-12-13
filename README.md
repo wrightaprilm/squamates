@@ -1,7 +1,15 @@
-squamates
+Data and code associated with: What Came First?
+Wright AM, Lyons KM, Hillis DM, Brandley MB.
 =========
 
-files related to squamate parity project
-bisse.rmd will estimate best-fit BiSSE models on a collection of time-scaled trees. Simply place it in the directory with the files you'd like to estimate models for and run it. 
-Makefile reproduces full analyses. 
-	+ Dependencies: plot.py, plot_support.py, bisse.rmd, splitbisse.r and a directory one directory up called 'trees' full of trees with the ending '.tre'
++ Exploratory notebooks: iPython notebooks used for exploratory analysis. These scripts are not used in the main pipeline, but used to explore data. Values from these exploratory notebooks are reported in the paper, but not used explicitly a pipeline step. Also included are interactive vesions of pipeline pieces.
++ Main pipeline: This is the main pipeline used to create the main results in the paper. Makefile reproduces full analysis. To do this, clone the repository, change directories into it and type 'make'
++ Dependencies:
+    + R:
+        + Diversitree
+    + Python:
+        + Pandas
+        + Matplotlib
+        + Dendropy
+        
++ Note: Running the full pipeline with make is a multiple-hour process. Picking the steps of interest out of the Scripts directory is almost certainly more useful.
