@@ -1,6 +1,7 @@
 FROM ipython/scipystack
 
 RUN apt-get install -y r-base r-base-dev r-cran-rcurl libreadline-dev
+RUN apt-get install gsl-bin libgsl0-dev
 
 RUN useradd -m -s /bin/bash squamate
 
@@ -17,6 +18,8 @@ RUN echo 'options(repos=structure(c(CRAN="http://cran.rstudio.com")))' > /home/s
 
 RUN mkdir /home/squamate/.R/
 
+# R dev helpers
 RUN echo "install.packages(c('RCurl', 'devtools'))" | R --no-save
+RUN echo "install.packages(c('diversitree'))" | R --no-save
 
 RUN chown -R squamate:squamate /home/squamate
