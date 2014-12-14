@@ -56,7 +56,7 @@ for (x in tree_list){
 #	plot(pruned.tree, show.tip.label=F)
 ##	fit_plot <- nodelabels(pie=t(st), piecol=1:2, cex=.5)
 	pruned.tree$node.label <- st[1,]	
-	new_name <- paste('annotatedBL', basename(x), sep = '_')
+	new_name <- paste('annotatedBL_0', basename(x), sep = '_')
 	write.tree(pruned.tree, file = new_name, append = FALSE, digits = 10, tree.names = FALSE)
 	pruned.tree$node.label <- st1[1,]	
 	new_name <- paste('annotatedBL_1', basename(x), sep = '_')

@@ -46,14 +46,12 @@ def counting(labeled_trees):
                     else:
                         putative_co.append(node.parent_node.label)
                         for nd in node.child_nodes():
-#                       print nd.taxon
                             pass
             elif 0 < float(node.label) < .5 or float(node.label) == 1: 
                 if float(node.parent_node.label) > .5: 
                     putative_c.append([node.parent_node.label,node.taxon])     
     mega_list.append((len(putative_c)))
     rev_mat = pd.DataFrame(mega_list)
-#    rev_mat.index = flist
     return(rev_mat)
     
 if __name__ == '__main__':
