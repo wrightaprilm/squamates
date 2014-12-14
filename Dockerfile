@@ -3,6 +3,8 @@ FROM ipython/scipystack
 RUN apt-get install -y r-base r-base-dev r-cran-rcurl libreadline-dev
 RUN apt-get install gsl-bin libgsl0-dev
 
+RUN pip2 install dendropy
+
 RUN useradd -m -s /bin/bash squamate
 
 USER squamate
