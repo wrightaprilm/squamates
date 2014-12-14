@@ -6,13 +6,12 @@ RUN apt-get install gsl-bin libgsl0-dev
 RUN pip2 install dendropy
 
 RUN useradd -m -s /bin/bash squamate
+ADD . /home/squamate/squamates
 
 USER squamate
 ENV HOME /home/squamate
 ENV SHELL /bin/bash
 ENV USER squamate
-
-WORKDIR /home/squamate
 
 # Setup the R environment
 RUN echo 'R_LIBS_USER=~/.R:/usr/lib/R/site-library' > /home/squamate/.Renviron
@@ -24,4 +23,10 @@ RUN mkdir /home/squamate/.R/
 RUN echo "install.packages(c('RCurl', 'devtools'))" | R --no-save
 RUN echo "install.packages(c('diversitree'))" | R --no-save
 
+USER root
 RUN chown -R squamate:squamate /home/squamate
+USER squamate
+
+WORKDIR /home/squamate/squamates
+
+CMD ["make"]
