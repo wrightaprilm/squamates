@@ -6,7 +6,6 @@ RUN apt-get install gsl-bin libgsl0-dev
 RUN pip2 install dendropy
 
 RUN useradd -m -s /bin/bash squamate
-ADD . /home/squamate/squamates
 
 USER squamate
 ENV HOME /home/squamate
@@ -24,6 +23,7 @@ RUN echo "install.packages(c('RCurl', 'devtools'))" | R --no-save
 RUN echo "install.packages(c('diversitree'))" | R --no-save
 
 USER root
+ADD . /home/squamate/squamates
 RUN chown -R squamate:squamate /home/squamate
 USER squamate
 
