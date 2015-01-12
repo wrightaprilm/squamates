@@ -24,8 +24,8 @@ for (x in tree_list){
 	names(no_na) <- pruned.tree$tip.label
 	#Make the BiSSE function
     func <- make.bisse(pruned.tree,no_na)
-    func1 <- make.bisse(pruned.tree,no_na, sampling.f = .44)
-    func2 <- make.bisse(pruned.tree,no_na, sampling.f = c(.44, .67))
+    func1 <- make.bisse(pruned.tree,no_na, sampling.f = .42)
+    func2 <- make.bisse(pruned.tree,no_na, sampling.f = c(.47, .63))
 	sp<-starting.point.bisse(pruned.tree)
 	# Find MLE and use it to do ancestral state reconstruction 
 	fit_bisse <- find.mle(func, sp)
